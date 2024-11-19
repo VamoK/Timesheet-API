@@ -18,8 +18,6 @@ public class JavaFXApplication2 extends Application {
 
             // Optionally, you can access the controller if needed
             TimesheetController controller = loader.getController();
-            // For example, you could call a method on the controller here if needed
-            // controller.someMethod();
 
             // Set the scene with the loaded FXML root
             Scene scene = new Scene(root);
