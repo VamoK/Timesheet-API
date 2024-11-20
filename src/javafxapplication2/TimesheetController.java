@@ -14,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javax.crypto.SecretKey;
 
 public class TimesheetController implements Initializable {
 
@@ -47,16 +48,18 @@ public class TimesheetController implements Initializable {
         try {
             // Establish connection to the database
             Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-            
-            // Generate a salt
-            byte[] salt = generateSalt();
+            // Generate a SecretKey
+            SecretKey secretKey = EncryptionUtil.generateSecretKey();
 
-            // Hash the password with the salt
-            String hashedPassword = hashPassword(pass, salt);
+            // Convert SecretKey to Base64 for storage (optional)
+            String secretKeyBase64 = EncryptionUtil.secretKeyToBase64(secretKey);
+
+            // Convert Base64 back to SecretKey (optional)
+            SecretKey restoredSecretKey = EncryptionUtil.base64ToSecretKey(secretKeyBase64);
             
             if (connection != null) {
                 
-                UserManager us = new UserManager(connection);
+                UserManager us = new UserManager(connection , restoredSecretKey);
                 us.addUser(user, pass);
                 connection.close();
                 System.out.println("Connection established successfully!");
@@ -66,35 +69,6 @@ public class TimesheetController implements Initializable {
         } catch (Exception ex) {
             Logger.getLogger(TimesheetController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-    
-    // Generate a random salt
-    private static byte[] generateSalt() throws Exception {
-        SecureRandom random = SecureRandom.getInstanceStrong();
-        byte[] salt = new byte[16];
-        random.nextBytes(salt);
-        return salt;
-    }
-
-    // Hash the password with SHA-256
-    private static String hashPassword(String password, byte[] salt) throws Exception {
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(salt); // Add salt to the hashing
-        byte[] hashedBytes = md.digest(password.getBytes());
-        return bytesToHex(hashedBytes);
-    }
-
-    // Convert bytes to a hexadecimal string
-    private static String bytesToHex(byte[] bytes) {
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : bytes) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) {
-                hexString.append('0');
-            }
-            hexString.append(hex);
-        }
-        return hexString.toString();
     }
     
     @Override

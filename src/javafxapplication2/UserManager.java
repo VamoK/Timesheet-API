@@ -12,6 +12,7 @@ import java.sql.*;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
@@ -22,9 +23,11 @@ import javax.crypto.spec.PBEKeySpec;
 public class UserManager implements UserInterface {
 
     private Connection conn;
+    private SecretKey secretKey;
 
-    public UserManager(Connection conn) {
+    public UserManager(Connection conn, SecretKey secretKey) {
         this.conn = conn;
+        this.secretKey = secretKey;
     }
 
     public Connection getConn() {
@@ -34,22 +37,15 @@ public class UserManager implements UserInterface {
     @Override
     public void addUser(String username, String password) {
         try {
-            // Generate a salt
-            byte[] salt = generateSalt();
-            
-            // Hash the password with PBKDF2 and the salt
-            String hashedPassword = hashPassword(password, salt);
-
-            // Convert the salt to Base64 for storage in DB
-            String saltBase64 = Base64.getEncoder().encodeToString(salt);
+            // Encrypt the password
+            String encryptedPassword = EncryptionUtil.encryptPassword(password, secretKey);
 
             // Database query to insert user info
-            String query = "INSERT INTO [Users].[dbo].[USER_INFO] (username, password, salt) VALUES (?, ?, ?)";
+            String query = "INSERT INTO [Users].[dbo].[USER_INFO] (username, password) VALUES (?, ?)";
             try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(query)) {
                 // Set query parameters
                 ps.setString(1, username);
-                ps.setString(2, hashedPassword); // Store hashed password
-                ps.setString(3, saltBase64); // Store salt as Base64 string
+                ps.setString(2, encryptedPassword); // Store encrypted password
 
                 // Execute the update (insert)
                 int rowsAffected = ps.executeUpdate();
@@ -65,47 +61,45 @@ public class UserManager implements UserInterface {
         }
     }
 
-    private byte[] generateSalt() {
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[16]; // Typically 16 bytes is good enough
-        random.nextBytes(salt);
-        return salt;
-    }
-
-    private String hashPassword(String password, byte[] salt) {
+    public String getPassword(String username) {
         try {
-            // PBKDF2 with SHA-256 and 10000 iterations
-            PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 10000, 256); // 256-bit hash
-            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-            byte[] hashedPassword = skf.generateSecret(spec).getEncoded();
-            
-            // Convert hashed password to Base64 for storage
-            return Base64.getEncoder().encodeToString(hashedPassword);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            // Database query to get the stored encrypted password
+            String query = "SELECT password FROM [Users].[dbo].[USER_INFO] WHERE username = ?";
+            try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setString(1, username);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        String encryptedPassword = rs.getString("password");
+
+                        // Decrypt the password
+                        return EncryptionUtil.decryptPassword(encryptedPassword, secretKey);
+                    } else {
+                        System.out.println("User not found");
+                        return null;
+                    }
+                }
+            }
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public boolean verifyPassword(String username, String inputPassword) {
+    public boolean validateUser(String username, String inputPassword) {
         try {
-            // Database query to get the stored hashed password and salt
-            String query = "SELECT password, salt FROM [Users].[dbo].[USER_INFO] WHERE username = ?";
+            // Database query to get the stored encrypted password
+            String query = "SELECT password FROM [Users].[dbo].[USER_INFO] WHERE username = ?";
             try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(query)) {
                 ps.setString(1, username);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        String storedHashedPassword = rs.getString("password");
-                        String storedSaltBase64 = rs.getString("salt");
+                        String storedEncryptedPassword = rs.getString("password");
 
-                        // Convert the stored salt from Base64 to byte array
-                        byte[] storedSalt = Base64.getDecoder().decode(storedSaltBase64);
+                        // Decrypt the stored password
+                        String decryptedStoredPassword = EncryptionUtil.decryptPassword(storedEncryptedPassword, secretKey);
 
-                        // Hash the input password with the stored salt
-                        String hashedInputPassword = hashPassword(inputPassword, storedSalt);
-
-                        // Compare the hashed input password with the stored hashed password
-                        return storedHashedPassword.equals(hashedInputPassword);
+                        // Compare the decrypted stored password with the input password
+                        return decryptedStoredPassword.equals(inputPassword);
                     } else {
                         System.out.println("User not found");
                         return false;
@@ -115,7 +109,6 @@ public class UserManager implements UserInterface {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
-      
         }
     }
-    }
+}
