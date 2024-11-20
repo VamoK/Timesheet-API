@@ -86,4 +86,36 @@ public class UserManager implements UserInterface {
             return null;
         }
     }
-}
+
+    public boolean verifyPassword(String username, String inputPassword) {
+        try {
+            // Database query to get the stored hashed password and salt
+            String query = "SELECT password, salt FROM [Users].[dbo].[USER_INFO] WHERE username = ?";
+            try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(query)) {
+                ps.setString(1, username);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        String storedHashedPassword = rs.getString("password");
+                        String storedSaltBase64 = rs.getString("salt");
+
+                        // Convert the stored salt from Base64 to byte array
+                        byte[] storedSalt = Base64.getDecoder().decode(storedSaltBase64);
+
+                        // Hash the input password with the stored salt
+                        String hashedInputPassword = hashPassword(inputPassword, storedSalt);
+
+                        // Compare the hashed input password with the stored hashed password
+                        return storedHashedPassword.equals(hashedInputPassword);
+                    } else {
+                        System.out.println("User not found");
+                        return false;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+      
+        }
+    }
+    }

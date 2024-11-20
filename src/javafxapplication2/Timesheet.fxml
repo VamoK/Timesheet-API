@@ -19,12 +19,12 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="165.0" layoutY="139.0" prefHeight="33.0" prefWidth="108.0" text="USERNAME">
+      <Label layoutX="165.0" layoutY="139.0" prefHeight="33.0" prefWidth="108.0" text="EMAIL">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Text id="title" boundsType="LOGICAL_VERTICAL_CENTER" layoutX="160.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title" text="SIGN IN" textAlignment="CENTER" textOrigin="CENTER" wrappingWidth="267.13671875">
+      <Text id="title" boundsType="LOGICAL_VERTICAL_CENTER" layoutX="160.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title" text="SIGN IN" textAlignment="CENTER" textOrigin="CENTER" wrappingWidth="267.13671875">
          <font>
             <Font size="24.0" />
          </font>
