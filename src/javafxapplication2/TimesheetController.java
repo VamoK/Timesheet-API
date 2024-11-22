@@ -60,7 +60,7 @@ public class TimesheetController implements Initializable {
             if (connection != null) {
                 
                 UserManager us = new UserManager(connection , restoredSecretKey);
-                us.validateUser(user, pass);
+                us.addUser(user, pass);
                 connection.close();
                 System.out.println("Connection established successfully!");
             }
