@@ -10,10 +10,14 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import javax.crypto.SecretKey;
 
 public class TimesheetController implements Initializable {
@@ -63,6 +67,17 @@ public class TimesheetController implements Initializable {
                 us.addUser(user, pass);
                 connection.close();
                 System.out.println("Connection established successfully!");
+                
+                //load new FXML file
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
+                Parent root = loader.load();
+                // Get the current stage
+                Stage stage = (Stage) sign_in_submit.getScene().getWindow();
+
+                // Set the new scene
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
             }
         } catch (SQLException e) {
             System.err.println("Failed to connect to the database: " + e.getMessage());
