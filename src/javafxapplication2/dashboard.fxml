@@ -9,12 +9,12 @@
 <?import javafx.scene.text.Text?>
 
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafxapplication2.DashboardController">
    <left>
       <VBox prefHeight="400.0" prefWidth="116.0" style="-fx-background-color: #0D1824;" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" prefHeight="48.0" prefWidth="116.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Create Timesheet" textFill="WHITE" />
-            <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="116.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="View Timesheet" textFill="WHITE" />
+            <Button mnemonicParsing="false" onMouseClicked="#create" prefHeight="48.0" prefWidth="116.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Create Timesheet" textFill="WHITE" />
+            <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onMouseClicked="#view" prefHeight="48.0" prefWidth="116.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="View Timesheet" textFill="WHITE" />
          </children>
       </VBox>
    </left>
@@ -26,26 +26,31 @@
                   <Font size="26.0" />
                </font>
             </Text>
-            <TextField layoutX="22.0" layoutY="103.0" prefHeight="25.0" prefWidth="340.0" promptText="Project Name" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;">
+            <TextField fx:id="projectName" layoutX="14.0" layoutY="176.0" prefHeight="25.0" prefWidth="340.0" promptText="Project Name">
                <font>
                   <Font size="15.0" />
                </font>
             </TextField>
-            <TextField layoutX="22.0" layoutY="167.0" prefHeight="25.0" prefWidth="340.0" promptText="Description" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;">
+            <TextField fx:id="projectDesc" layoutX="14.0" layoutY="243.0" prefHeight="25.0" prefWidth="340.0" promptText="Description" style="-fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;">
                <font>
                   <Font size="15.0" />
                </font>
             </TextField>
-            <Button layoutX="22.0" layoutY="266.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="131.0" style="-fx-background-color: #2F4F4F;" text="Start" textFill="WHITE">
+            <Button fx:id="startBTN" layoutX="14.0" layoutY="325.0" mnemonicParsing="false" onAction="#startCount" prefHeight="38.0" prefWidth="131.0" style="-fx-background-color: #2F4F4F;" text="Start" textFill="WHITE">
                <font>
                   <Font name="Georgia Bold" size="18.0" />
                </font>
             </Button>
-            <Button layoutX="242.0" layoutY="266.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="131.0" style="-fx-background-color: #2F4F4F;" text="End" textFill="WHITE">
+            <Button fx:id="endBTN" layoutX="231.0" layoutY="325.0" mnemonicParsing="false" onAction="#endCount" prefHeight="38.0" prefWidth="131.0" style="-fx-background-color: #2F4F4F;" text="End" textFill="WHITE">
                <font>
                   <Font name="Georgia Bold" size="18.0" />
                </font>
             </Button>
+            <Text id="timeline" fx:id="timeline" fill="WHITE" layoutX="109.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" visible="false" wrappingWidth="265.13671875">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Text>
          </children>
       </AnchorPane>
    </center>
