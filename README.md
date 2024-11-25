@@ -7,8 +7,7 @@
 - **Automatic Time Tracking**: Record start and stop times effortlessly with a click of a button.  
 - **Project-Based Organization**: Input the project name or description, and the API handles the rest.  
 - **Automated Calculations**: The API calculates the total hours spent on a project automatically.  
-- **Database Storage**: All tracked data is securely stored in the database for easy retrieval.  
-- **Downloadable Timesheets**: Export your timesheets as CSV files for reporting or record-keeping.  
+- **Database Storage**: All tracked data is securely stored in the database for easy retrieval. 
 
 ## How It Works  
 1. Enter the project name or description.  
