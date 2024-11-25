@@ -57,9 +57,11 @@ public class UserManager implements UserInterface {
     }
 
     @Override
-    public String getUser(String username, String password) throws SQLServerException {
+    public User getUser(String username, String password) throws SQLServerException {
         
         String response = "";
+        User user = null;
+        
         try {
             String query = "SELECT * FROM [Users].[dbo].[USER_INFO] WHERE username = ? AND password = ?";
             
@@ -71,13 +73,15 @@ public class UserManager implements UserInterface {
             ResultSet rs = ps.executeQuery();
             
             
-            if(!rs.next()){
-                response = "Incorrect Credentials.Please check your username and password";
+            if(rs.next()){
+                user = new User();
+                user.setUsername(rs.getString("username"));
+                user.setPassword("password");
             }
         } catch (SQLException ex) {
             Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        return response;
+        return user;
     }
 }

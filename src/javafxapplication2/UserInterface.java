@@ -12,5 +12,5 @@ import com.microsoft.sqlserver.jdbc.SQLServerException;
  */
 public interface UserInterface {
     public String addUser(String username , String password) throws SQLServerException;
-    public String getUser(String username , String password) throws SQLServerException;
+    public User getUser(String username , String password) throws SQLServerException;
 }

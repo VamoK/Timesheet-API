@@ -72,11 +72,11 @@ public class TimesheetController implements Initializable {
             if (connection != null) {
                 
                 UserManager us = new UserManager(connection);
-                String response = us.getUser(user, pass);
+                User userResponse = us.getUser(user, pass);
                 
-                if(response.equals("Incorrect Credentials.Please check your username and password")){
+                if(userResponse.getUsername() == null){
                    
-                       error_message.setText(response);
+                       error_message.setText("Incorrect Credentials.Please check your username and password");
                        error_message.setVisible(true);
                        
                 }else{
