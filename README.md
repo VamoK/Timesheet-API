@@ -14,7 +14,6 @@
 2. Click the **Start** button to record the start time.  
 3. Click the **Stop** button to record the stop time.  
 4. The API calculates the total hours spent on the project.  
-5. Download your timesheets in CSV format for future use.  
 
 ## Purpose  
 The primary goal of this project is to enhance productivity and reduce the burden of manual time tracking for professionals. By automating these tasks, Timesheet-API empowers users to focus on their core responsibilities while maintaining accurate time records effortlessly.  
