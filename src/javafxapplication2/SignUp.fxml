@@ -2,7 +2,6 @@
 
 <?import java.net.URL?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
@@ -25,29 +24,23 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Text id="title" boundsType="LOGICAL_VERTICAL_CENTER" fill="DARKBLUE" layoutX="160.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title" text="SIGN IN" textAlignment="CENTER" textOrigin="CENTER" wrappingWidth="267.13671875">
+      <Text id="title" boundsType="LOGICAL_VERTICAL_CENTER" fill="DARKBLUE" layoutX="160.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title" text="SIGN UP" textAlignment="CENTER" textOrigin="CENTER" wrappingWidth="267.13671875">
          <font>
             <Font size="24.0" />
          </font>
       </Text>
-      <TextField fx:id="username" layoutX="165.0" layoutY="172.0" prefHeight="44.0" prefWidth="281.0" style="-fx-border-color: #00008B;">
+      <TextField fx:id="email" layoutX="165.0" layoutY="172.0" prefHeight="44.0" prefWidth="281.0" style="-fx-border-color: #00008B;">
          <font>
             <Font size="14.0" />
          </font></TextField>
-      <PasswordField fx:id="password" layoutX="165.0" layoutY="246.0" prefHeight="37.0" prefWidth="281.0" style="-fx-border-color: #00008B;">
+      <PasswordField fx:id="password2" layoutX="165.0" layoutY="246.0" prefHeight="37.0" prefWidth="281.0" style="-fx-border-color: #00008B;">
          <font>
             <Font size="14.0" />
          </font></PasswordField>
-      <Button fx:id="sign_in_submit" layoutX="234.0" layoutY="320.0" mnemonicParsing="false" onAction="#checkDB" prefHeight="35.0" prefWidth="144.0" style="-fx-background-color: #00008B;" text="SIGN IN" textFill="WHITE">
+      <Button fx:id="sign_in_submit" layoutX="234.0" layoutY="320.0" mnemonicParsing="false" onAction="#signUp" prefHeight="35.0" prefWidth="144.0" style="-fx-background-color: #00008B;" text="SIGN UP" textFill="WHITE">
          <font>
             <Font size="18.0" />
          </font></Button>
-      <Hyperlink layoutX="132.0" layoutY="385.0" onAction="#openSignUp" text="Sign Up">
-         <font>
-            <Font size="11.0" />
-         </font>
-      </Hyperlink>
-      <Text layoutX="8.0" layoutY="400.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Don't have an account?" />
       <Text id="error_message" fx:id="error_message" fill="RED" layoutX="160.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" wrappingWidth="329.13671875" />
    </children>
 </AnchorPane>

@@ -5,7 +5,10 @@
 package javafxapplication2;
 
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.SecretKey;
 
 /**
@@ -15,11 +18,9 @@ import javax.crypto.SecretKey;
 public class UserManager implements UserInterface {
 
     private Connection conn;
-    private SecretKey secretKey;
 
-    public UserManager(Connection conn, SecretKey secretKey) {
+    public UserManager(Connection conn) {
         this.conn = conn;
-        this.secretKey = secretKey;
     }
 
     public Connection getConn() {
@@ -27,80 +28,56 @@ public class UserManager implements UserInterface {
     }
 
     @Override
-    public void addUser(String username, String password) {
+    public String addUser(String username, String password) {
+        
+        String response="";
         try {
-            // Encrypt the password
-            String encryptedPassword = EncryptionUtil.encryptPassword(password, secretKey);
 
             // Database query to insert user info
             String query = "INSERT INTO [Users].[dbo].[USER_INFO] (username, password) VALUES (?, ?)";
             try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(query)) {
                 // Set query parameters
                 ps.setString(1, username);
-                ps.setString(2, encryptedPassword); // Store encrypted password
+                ps.setString(2, password); // Store encrypted password
 
                 // Execute the update (insert)
                 int rowsAffected = ps.executeUpdate();
                 if (rowsAffected > 0) {
-                    System.out.println("User added successfully");
+                    response = "User added successfully. Please sign in";
                 } else {
-                    System.out.println("Insert failed");
+                    response = "Failed to add a user";
                 }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        return response;
     }
 
-    public String getPassword(String username) {
+    @Override
+    public String getUser(String username, String password) throws SQLServerException {
+        
+        String response = "";
         try {
-            // Database query to get the stored encrypted password
-            String query = "SELECT password FROM [Users].[dbo].[USER_INFO] WHERE username = ?";
-            try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(query)) {
-                ps.setString(1, username);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        String encryptedPassword = rs.getString("password");
-
-                        // Decrypt the password
-                        return EncryptionUtil.decryptPassword(encryptedPassword, secretKey);
-                    } else {
-                        System.out.println("User not found");
-                        return null;
-                    }
-                }
+            String query = "SELECT * FROM [Users].[dbo].[USER_INFO] WHERE username = ? AND password = ?";
+            
+            PreparedStatement ps = conn.prepareStatement(query);
+            
+            ps.setString(1, username);
+            ps.setString(2, password);
+            
+            ResultSet rs = ps.executeQuery();
+            
+            
+            if(!rs.next()){
+                response = "Incorrect Credentials.Please check your username and password";
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public boolean validateUser(String username, String inputPassword) {
-        try {
-            // Database query to get the stored encrypted password
-            String query = "SELECT password FROM [Users].[dbo].[USER_INFO] WHERE username = ?";
-            try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(query)) {
-                ps.setString(1, username);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        String storedEncryptedPassword = rs.getString("password");
-
-                        // Decrypt the stored password
-                        String decryptedStoredPassword = EncryptionUtil.decryptPassword(storedEncryptedPassword, secretKey);
-
-                        // Compare the decrypted stored password with the input password
-                        return decryptedStoredPassword.equals(inputPassword);
-                    } else {
-                        System.out.println("User not found");
-                        return false;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        
+        return response;
     }
 }

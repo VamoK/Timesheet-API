@@ -21,7 +21,7 @@ public class JavaFXApplication2 extends Application {
 
             // Set the scene with the loaded FXML root
             Scene scene = new Scene(root);
-            primaryStage.setTitle("Login");
+            //primaryStage.setTitle("Login");
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (Exception e) {

@@ -11,5 +11,6 @@ import com.microsoft.sqlserver.jdbc.SQLServerException;
  * @author Vamokuhle
  */
 public interface UserInterface {
-    public void addUser(String username , String password) throws SQLServerException;
+    public String addUser(String username , String password) throws SQLServerException;
+    public String getUser(String username , String password) throws SQLServerException;
 }
